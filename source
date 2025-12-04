@@ -112,8 +112,8 @@ bool canMove(int dx, int dy){
             }
     return true;
 }
-void removeLine(){}
-/* void removeLine(){
+
+ void removeLine(){
     int j;
     for (int i = H-2; i >0 ; i-- ){
         for (j = 0; j < W-1 ; j++)
@@ -127,7 +127,7 @@ void removeLine(){}
         }
     }
 }
-*/
+
 int main()
 {
     srand(time(0));
