@@ -89,17 +89,46 @@ void block2Board() {
             if (blocks[b][i][j] != ' ')
                 board[y + i][x + j] = blocks[b][i][j];
 }
-void initBoard() {
-    for (int i = 0; i < H; i++)
-        for (int j = 0; j < W; j++)
-            if ((i == H - 1) || (j == 0) || (j == W - 1)) board[i][j] = '#';
+void initBoard(){
+    for (int i = 0 ; i < H ; i++){
+        for (int j = 0 ; j < W ; j++){
+
+            // Góc
+            if (i == 0 && j == 0)                board[i][j] = '┏';
+            else if (i == 0 && j == W-1)         board[i][j] = '┓';
+            else if (i == H-1 && j == 0)         board[i][j] = '┗';
+            else if (i == H-1 && j == W-1)       board[i][j] = '┛';
+
+            // Viền trên/dưới
+            else if (i == 0 || i == H-1)         board[i][j] = '━';
+
+            // Viền trái/phải
+            else if (j == 0 || j == W-1)         board[i][j] = '┃';
+
+            // Bên trong
             else board[i][j] = ' ';
+        }
+    }
 }
-void draw() {
-    gotoxy(0, 0);
-    for (int i = 0; i < H; i++, cout << endl)
-        for (int j = 0; j < W; j++)
-            cout << board[i][j];
+void draw(){
+    gotoxy(0,0);
+    for (int i = 0 ; i < H ; i++){
+        for (int j = 0 ; j < W ; j++){
+            
+            char c = board[i][j];
+
+            // Nếu là ký tự block (I,O,T,S,Z,J,L) → in ra █
+            if (c=='I' || c=='O' || c=='T' || c=='S' ||
+                c=='Z' || c=='J' || c=='L') {
+                cout << char(219);   // █
+            }
+            else {
+                cout << c;
+            }
+
+        }
+        cout << endl;
+    }
 }
 bool canMove(int dx, int dy) {
     for (int i = 0; i < 4; i++)
