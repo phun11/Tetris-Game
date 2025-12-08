@@ -58,6 +58,8 @@ char blocks[7][4][4] = {
 };
 
 int x = 4, y = 0, b = 1;
+int speed = 200;   // tốc độ rơi mặc định
+
 void gotoxy(int x, int y) {
     COORD c = { x, y };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
@@ -75,16 +77,45 @@ void block2Board() {
                 board[y + i][x + j] = blocks[b][i][j];
 }
 void initBoard() {
-    for (int i = 0; i < H; i++)
-        for (int j = 0; j < W; j++)
-            if ((i == H - 1) || (j == 0) || (j == W - 1)) board[i][j] = '#';
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
+
+            // Góc
+            if (i == 0 && j == 0)                board[i][j] = '┏';
+            else if (i == 0 && j == W - 1)         board[i][j] = '┓';
+            else if (i == H - 1 && j == 0)         board[i][j] = '┗';
+            else if (i == H - 1 && j == W - 1)       board[i][j] = '┛';
+
+            // Viền trên/dưới
+            else if (i == 0 || i == H - 1)         board[i][j] = '━';
+
+            // Viền trái/phải
+            else if (j == 0 || j == W - 1)         board[i][j] = '┃';
+
+            // Bên trong
             else board[i][j] = ' ';
+        }
+    }
 }
 void draw() {
     gotoxy(0, 0);
-    for (int i = 0; i < H; i++, cout << endl)
-        for (int j = 0; j < W; j++)
-            cout << board[i][j];
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
+
+            char c = board[i][j];
+
+            // Nếu là ký tự block (I,O,T,S,Z,J,L) → in ra █
+            if (c == 'I' || c == 'O' || c == 'T' || c == 'S' ||
+                c == 'Z' || c == 'J' || c == 'L') {
+                cout << char(219);   // █
+            }
+            else {
+                cout << c;
+            }
+
+        }
+        cout << endl;
+    }
 }
 bool canMove(int dx, int dy) {
     for (int i = 0; i < 4; i++)
@@ -108,36 +139,37 @@ void removeLine() {
             i++;
             draw();
             Sleep(200);
+            if (speed > 50) speed -= 10;   // tăng tốc sau khi clear line
         }
     }
 }
-bool canRotate(char newBlock[4][4]) {
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            if (newBlock[i][j] != ' ') {
-                int tx = x + j;
-                int ty = y + i;
-                if (tx < 1 || tx >= W - 1 || ty >= H - 1) return false;
-                if (board[ty][tx] != ' ') return false;
-            }
-    return true;
-}
-
 void rotateBlock() {
     char temp[4][4];
+
+    // copy
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            temp[i][j] = blocks[b][3 - j][i];  
+            temp[i][j] = blocks[b][i][j];
 
-    if (canRotate(temp)) {
+    // xoay 90 độ
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            blocks[b][j][3 - i] = temp[i][j];
+
+    // kiểm tra va chạm
+    if (!canMove(0, 0)) {
+        // nếu xoay bị kẹt → xoay lại (undo)
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 blocks[b][i][j] = temp[i][j];
     }
 }
-
 int main()
 {
+    // đoạn này tui bị lỗi phông lúc chạy nên thêm vào
+    system("chcp 65001 > nul");
+    system("cls");
+
     srand(time(0));
     b = rand() % 7;
     system("cls");
@@ -146,10 +178,10 @@ int main()
         boardDelBlock();
         if (_kbhit()) {
             char c = _getch();
+            if (c == 'w') rotateBlock(); //điều khiển xoay
             if (c == 'a' && canMove(-1, 0)) x--;
             if (c == 'd' && canMove(1, 0)) x++;
             if (c == 'x' && canMove(0, 1))  y++;
-            if (c == 'w') rotateBlock();
             if (c == 'q') break;
         }
         if (canMove(0, 1)) y++;
@@ -160,7 +192,7 @@ int main()
         }
         block2Board();
         draw();
-        Sleep(200);
+        Sleep(speed); // thay biến speed kiểm soát tốc độ vào
     }
     return 0;
 }
