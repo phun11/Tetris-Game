@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <conio.h>
 #include <windows.h>
 using namespace std;
@@ -12,41 +12,41 @@ char blocks[7][4][4] = {
      {' ','I',' ',' '},
      {' ','I',' ',' '}},
 
-    // O
-    {{' ',' ',' ',' '},
-     {' ','O','O',' '},
-     {' ','O','O',' '},
-     {' ',' ',' ',' '}},
+     // O
+     {{' ',' ',' ',' '},
+      {' ','O','O',' '},
+      {' ','O','O',' '},
+      {' ',' ',' ',' '}},
 
-    // T
-    {{' ','T',' ',' '},
-     {'T','T','T',' '},
-     {' ',' ',' ',' '},
-     {' ',' ',' ',' '}},
+      // T
+      {{' ','T',' ',' '},
+       {'T','T','T',' '},
+       {' ',' ',' ',' '},
+       {' ',' ',' ',' '}},
 
-    // S
-    {{' ','S','S',' '},
-     {'S','S',' ',' '},
-     {' ',' ',' ',' '},
-     {' ',' ',' ',' '}},
+       // S
+       {{' ','S','S',' '},
+        {'S','S',' ',' '},
+        {' ',' ',' ',' '},
+        {' ',' ',' ',' '}},
 
-    // Z
-    {{'Z','Z',' ',' '},
-     {' ','Z','Z',' '},
-     {' ',' ',' ',' '},
-     {' ',' ',' ',' '}},
+        // Z
+        {{'Z','Z',' ',' '},
+         {' ','Z','Z',' '},
+         {' ',' ',' ',' '},
+         {' ',' ',' ',' '}},
 
-    // J
-    {{'J',' ',' ',' '},
-     {'J','J','J',' '},
-     {' ',' ',' ',' '},
-     {' ',' ',' ',' '}},
+         // J
+         {{'J',' ',' ',' '},
+          {'J','J','J',' '},
+          {' ',' ',' ',' '},
+          {' ',' ',' ',' '}},
 
-    // L
-    {{' ',' ','L',' '},
-     {'L','L','L',' '},
-     {' ',' ',' ',' '},
-     {' ',' ',' ',' '}}
+          // L
+          {{' ',' ','L',' '},
+           {'L','L','L',' '},
+           {' ',' ',' ',' '},
+           {' ',' ',' ',' '}}
 };
 
 
@@ -69,38 +69,38 @@ void block2Board() {
             if (blocks[b][i][j] != ' ')
                 board[y + i][x + j] = blocks[b][i][j];
 }
-void initBoard(){
-    for (int i = 0 ; i < H ; i++){
-        for (int j = 0 ; j < W ; j++){
+void initBoard() {
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
 
             // Góc
-            if (i == 0 && j == 0)                board[i][j] = '┏';
-            else if (i == 0 && j == W-1)         board[i][j] = '┓';
-            else if (i == H-1 && j == 0)         board[i][j] = '┗';
-            else if (i == H-1 && j == W-1)       board[i][j] = '┛';
+            if (i == 0 && j == 0) board[i][j] = '+';
+            else if (i == 0 && j == W - 1) board[i][j] = '+';
+            else if (i == H - 1 && j == 0) board[i][j] = '+';
+            else if (i == H - 1 && j == W - 1) board[i][j] = '+';
 
             // Viền trên/dưới
-            else if (i == 0 || i == H-1)         board[i][j] = '━';
+            else if (i == 0 || i == H - 1) board[i][j] = '-';
 
             // Viền trái/phải
-            else if (j == 0 || j == W-1)         board[i][j] = '┃';
+            else if (j == 0 || j == W - 1) board[i][j] = '|';
 
             // Bên trong
             else board[i][j] = ' ';
         }
     }
 }
-void draw(){
-    gotoxy(0,0);
-    for (int i = 0 ; i < H ; i++){
-        for (int j = 0 ; j < W ; j++){
-            
+void draw() {
+    gotoxy(0, 0);
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
+
             char c = board[i][j];
 
             // Nếu là ký tự block (I,O,T,S,Z,J,L) → in ra █
-            if (c=='I' || c=='O' || c=='T' || c=='S' ||
-                c=='Z' || c=='J' || c=='L') {
-                cout << char(219);   // █
+            if (c == 'I' || c == 'O' || c == 'T' || c == 'S' ||
+                c == 'Z' || c == 'J' || c == 'L') {
+                cout << char(219);
             }
             else {
                 cout << c;
@@ -140,27 +140,29 @@ void rotateBlock() {
     char temp[4][4];
 
     // copy
-    for (int i=0;i<4;i++)
-        for (int j=0;j<4;j++)
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             temp[i][j] = blocks[b][i][j];
 
     // xoay 90 độ
-    for (int i=0;i<4;i++)
-        for (int j=0;j<4;j++)
-            blocks[b][j][3-i] = temp[i][j];
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            blocks[b][j][3 - i] = temp[i][j];
 
     // kiểm tra va chạm
-    if (!canMove(0,0)) {
+    if (!canMove(0, 0)) {
         // nếu xoay bị kẹt → xoay lại (undo)
-        for (int i=0;i<4;i++)
-            for (int j=0;j<4;j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
                 blocks[b][i][j] = temp[i][j];
     }
 }
 int main()
 {
-    // đoạn này tui bị lỗi phông lúc chạy nên thêm vào
-    system("chcp 65001 > nul");
+
+    system("chcp 437 > nul");// thêm đúng codepage vào
+
+
     system("cls");
 
     srand(time(0));
