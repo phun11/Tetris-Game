@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <conio.h>
 #include <windows.h>
 using namespace std;
@@ -122,7 +122,7 @@ void removeLine() {
                 for (int j = 0; j < W - 1; j++) board[ii][j] = board[ii - 1][j];
             i++;
             draw();
-            Sleep(200);
+            _sleep(200);
         }
     }
 }
@@ -135,8 +135,8 @@ int main()
     initBoard();
     while (1) {
         boardDelBlock();
-        if (_kbhit()) {
-            char c = _getch();
+        if (kbhit()) {
+            char c = getch();
             if (c == 'a' && canMove(-1, 0)) x--;
             if (c == 'd' && canMove(1, 0)) x++;
             if (c == 'x' && canMove(0, 1))  y++;
@@ -150,7 +150,7 @@ int main()
         }
         block2Board();
         draw();
-        Sleep(200);
+        _sleep(200);
     }
     return 0;
 }
