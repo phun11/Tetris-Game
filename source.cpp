@@ -157,6 +157,21 @@ void rotateBlock() {
                 blocks[b][i][j] = temp[i][j];
     }
 }
+bool isGameOver();
+
+int level;
+int linesCleared;
+void updateLevel();
+
+void hardDrop();
+
+int score;  // điểm hiện tại
+void updateScore(int lines);
+
+
+int nextBlock;   // khối tiếp theo
+void drawNextBlock();
+void drawHUD();
 int main()
 {
 
