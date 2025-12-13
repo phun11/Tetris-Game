@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <conio.h>
 #include <windows.h>
 using namespace std;
@@ -190,3 +190,4 @@ int main()
         Sleep(speed); // thay biến speed kiểm soát tốc độ vào
     }
     return 0;
+}
