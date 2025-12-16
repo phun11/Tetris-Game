@@ -163,7 +163,12 @@ int level;
 int linesCleared;
 void updateLevel();
 
-void hardDrop();
+void hardDrop() {
+    boardDelBlock(); 
+    while (canMove(0, 1)) {
+        y++;
+    }
+}
 
 int score;  // điểm hiện tại
 void updateScore(int lines);
@@ -193,9 +198,15 @@ int main()
             if (c == 'd' && canMove(1, 0)) x++;
             if (c == 's' && canMove(0, 1))  y++;
             if (c == 'q') break;
+            else if (c == 'x') {
+                hardDrop();
+                goto lock_block; 
+            }
         }
+        
         if (canMove(0, 1)) y++;
         else {
+            lock_block:
             block2Board();
             removeLine();
             x = 6; y = 1; b = rand() % 7;
