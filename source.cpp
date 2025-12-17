@@ -1,4 +1,4 @@
-﻿#include <iostream>
+﻿﻿#include <iostream>
 #include <conio.h>
 #include <windows.h>
 using namespace std;
@@ -121,21 +121,27 @@ bool canMove(int dx, int dy) {
             }
     return true;
 }
-void removeLine() {
+int removeLine() {
+    int count = 0;
     int j;
+
     for (int i = H - 2; i > 0; i--) {
-        for (j = 0; j < W - 1; j++)
+        for (j = 1; j < W - 1; j++)
             if (board[i][j] == ' ') break;
+
         if (j == W - 1) {
+            count++;
+
             for (int ii = i; ii > 1; ii--)
-                for (int j = 0; j < W - 1; j++) board[ii][j] = board[ii - 1][j];
-            i++;
-            draw();
-            Sleep(200);
-            if (speed > 50) speed -= 10;   // tăng tốc sau khi clear line
+                for (int jj = 1; jj < W - 1; jj++)
+                    board[ii][jj] = board[ii - 1][jj];
+
+            i++;   
         }
     }
+    return count;
 }
+
 void rotateBlock() {
     char temp[4][4];
 
@@ -160,18 +166,35 @@ void rotateBlock() {
 bool isGameOver();
 
 int level;
-int linesCleared;
 void updateLevel();
 
 void hardDrop();
 
-int score;  // điểm hiện tại
-void updateScore(int lines);
+int score = 0;
+int linesCleared = 0;
+
+void updateScore(int lines) {
+    switch (lines) {
+    case 1: score += 40; break;
+    case 2: score += 100; break;
+    case 3: score += 300; break;
+    case 4: score += 1200; break;
+    }
+    linesCleared += lines;
+}
 
 
 int nextBlock;   // khối tiếp theo
 void drawNextBlock();
-void drawHUD();
+
+void drawHUD() {
+    gotoxy(W + 2, 2);
+    cout << "Score: " << score;
+
+    gotoxy(W + 2, 4);
+    cout << "Lines: " << linesCleared;
+}
+
 int main()
 {
 
@@ -197,11 +220,13 @@ int main()
         if (canMove(0, 1)) y++;
         else {
             block2Board();
-            removeLine();
+            int cleared= removeLine();
+            if(cleared>0) updateScore(cleared);
             x = 6; y = 1; b = rand() % 7;
         }
         block2Board();
         draw();
+        drawHUD();
         Sleep(speed); // thay biến speed kiểm soát tốc độ vào
     }
     return 0;
