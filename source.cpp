@@ -53,6 +53,53 @@ char blocks[7][4][4] = {
 int x = 6, y = 1, b = 1;
 int speed = 200;   // tốc độ rơi mặc định
 
+int showMainMenu() {
+    system("cls");
+
+    cout << "\n\n";
+    cout << "=============================================\n";
+    cout << "                 \033[1;36mT E T R I S\033[0m\n";
+    cout << "=============================================\n";
+    cout << "\n";
+    cout << "              \033[1mCHON CHE DO CHOI\033[0m\n";
+    cout << "\n";
+
+    cout << "   [1] Marathon       - Choi den khi thua\n";
+    cout << "   [2] Sprint (40 Lines) - Hoan thanh 40 hang nhanh nhat\n";
+    cout << "   [3] Ultra (2 Minutes) - Ghi diem trong 2 phut\n";
+    cout << "   [4] Endless        - Choi vo han\n";
+
+    cout << "\n";
+    cout << "   Chon 1 che do (1-4): ";
+
+    int mode;
+    cin >> mode;
+
+    return mode;
+}
+
+int showDifficultyMenu() {
+    system("cls");
+
+    cout << "\n\n";
+    cout << "=============================================\n";
+    cout << "            \033[1;33mCHON DO KHO\033[0m\n";
+    cout << "=============================================\n";
+    cout << "\n";
+
+    cout << "   [1] Easy\n";
+    cout << "   [2] Medium\n";
+    cout << "   [3] Hard\n";
+
+    cout << "\n";
+    cout << "   Chon do kho (1-3): ";
+
+    int diff;
+    cin >> diff;
+
+    return diff;
+}
+
 void gotoxy(int x, int y) {
     COORD c = { x, y };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
@@ -233,6 +280,16 @@ int main()
 
 
     system("cls");
+
+    int mode = showMainMenu();
+    int difficulty = showDifficultyMenu();
+
+    // Debug để xem giá trị
+    cout << "\nBan da chon che do: " << mode << endl;
+    cout << "Ban da chon do kho: " << difficulty << endl;
+
+    // Sau đó mới chạy game chính
+    system("pause");
 
     srand(time(0));
     b = rand() % 7;
