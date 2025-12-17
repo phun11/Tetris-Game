@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <conio.h>
 #include <windows.h>
 using namespace std;
@@ -226,6 +226,7 @@ int main()
 
         if (canMove(0, 1)) y++;
         else {
+            lock_block:
             block2Board();
             int cleared= removeLine();
             if(cleared>0) updateScore(cleared);
