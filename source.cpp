@@ -188,7 +188,25 @@ void updateScore(int lines) {
 }
 
 int nextBlock;   // khối tiếp theo
-void drawNextBlock();
+
+void drawNextBlock() {
+    int startX = W + 2;
+    int startY = 8;
+
+    gotoxy(startX, startY - 2);
+    cout << "Next:";
+
+    for (int i = 0; i < 4; i++) {
+        gotoxy(startX, startY + i);
+        for (int j = 0; j < 4; j++) {
+            if (blocks[nextBlock][i][j] != ' ')
+                cout << char(219);
+            else
+                cout << ' ';
+        }
+    }
+}
+
 
 void drawHUD() {
     gotoxy(W + 2, 2);
@@ -208,6 +226,7 @@ int main()
 
     srand(time(0));
     b = rand() % 7;
+    nextBlock = rand() % 7;
     system("cls");
     initBoard();
     while (1) {
@@ -226,14 +245,17 @@ int main()
 
         if (canMove(0, 1)) y++;
         else {
+            lock_block:
             block2Board();
             int cleared= removeLine();
             if(cleared>0) updateScore(cleared);
-            x = 6; y = 1; b = rand() % 7;
+            x = 6; y = 1; b = nextBlock; nextBlock = rand() % 7;
         }
         block2Board();
         draw();
         drawHUD();
+        drawNextBlock();
+
         Sleep(speed); // thay biến speed kiểm soát tốc độ vào
     }
     return 0;
