@@ -49,9 +49,13 @@ char blocks[7][4][4] = {
      {' ',' ',' ',' '}}
 };
 
-
+//tui mang hết biến toàn cục lên đây khai báo nha ae
 int x = 6, y = 1, b = 1;
 int speed = 200;   // tốc độ rơi mặc định
+int level = 1;        // level hiện tại (bắt đầu từ 1)
+int linesCleared = 0; // tổng số hàng đã xóa
+int score = 0;
+int nextBlock;   // khối tiếp theo
 
 int showMainMenu() {
     system("cls");
@@ -157,6 +161,7 @@ void draw() {
         cout << endl;
     }
 }
+
 bool canMove(int dx, int dy) {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
@@ -168,6 +173,7 @@ bool canMove(int dx, int dy) {
             }
     return true;
 }
+
 int removeLine() {
     int count = 0;
     int j;
@@ -188,6 +194,7 @@ int removeLine() {
     }
     return count;
 }
+
 void rotateBlock() {
     char temp[4][4];
 
@@ -209,6 +216,7 @@ void rotateBlock() {
                 blocks[b][i][j] = temp[i][j];
     }
 }
+
 bool isGameOver() {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
@@ -221,18 +229,12 @@ bool isGameOver() {
     return false;
 }
 
-int level;
-void updateLevel();
-
 void hardDrop() {
     boardDelBlock();
     while (canMove(0, 1)) {
         y++;
     }
 }
-
-int score = 0;
-int linesCleared = 0;
 
 void updateScore(int lines) {
     switch (lines) {
@@ -244,7 +246,20 @@ void updateScore(int lines) {
     linesCleared += lines;
 }
 
-int nextBlock;   // khối tiếp theo
+void updateLevel() {
+    int newLevel = linesCleared / 10 + 1;
+
+    if (newLevel > level) {
+        level = newLevel;
+
+        // tăng tốc độ rơi lên 10%
+        speed = (int)(speed * 0.9);
+
+        // giới hạn tốc độ tối đa
+        if (speed < 50)
+            speed = 50;
+    }
+}
 
 void drawNextBlock() {
     int startX = W + 2;
@@ -271,6 +286,10 @@ void drawHUD() {
 
     gotoxy(W + 2, 4);
     cout << "Lines: " << linesCleared;
+
+    //tạm thêm hiển thị level hiện tai để test code
+    gotoxy(W + 2, 6);
+    cout << "Level: " << level;
 }
 
 int main()
@@ -315,7 +334,10 @@ int main()
             lock_block:
             block2Board();
             int cleared= removeLine();
-            if(cleared>0) updateScore(cleared);
+            if(cleared>0) {
+                updateScore(cleared);
+                updateLevel();
+            }
             x = 6; y = 1; b = nextBlock; nextBlock = rand() % 7;
         }
         block2Board();
