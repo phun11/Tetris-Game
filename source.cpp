@@ -1,4 +1,4 @@
-﻿﻿#include <iostream>
+﻿#include <iostream>
 #include <conio.h>
 #include <windows.h>
 using namespace std;
@@ -136,12 +136,11 @@ int removeLine() {
                 for (int jj = 1; jj < W - 1; jj++)
                     board[ii][jj] = board[ii - 1][jj];
 
-            i++;   
+            i++;
         }
     }
     return count;
 }
-
 void rotateBlock() {
     char temp[4][4];
 
@@ -168,7 +167,12 @@ bool isGameOver();
 int level;
 void updateLevel();
 
-void hardDrop();
+void hardDrop() {
+    boardDelBlock();
+    while (canMove(0, 1)) {
+        y++;
+    }
+}
 
 int score = 0;
 int linesCleared = 0;
@@ -182,7 +186,6 @@ void updateScore(int lines) {
     }
     linesCleared += lines;
 }
-
 
 int nextBlock;   // khối tiếp theo
 void drawNextBlock();
@@ -216,7 +219,11 @@ int main()
             if (c == 'd' && canMove(1, 0)) x++;
             if (c == 's' && canMove(0, 1))  y++;
             if (c == 'q') break;
+            if (c == 'x') {
+                hardDrop();
+            }
         }
+
         if (canMove(0, 1)) y++;
         else {
             block2Board();
