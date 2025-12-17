@@ -162,7 +162,17 @@ void rotateBlock() {
                 blocks[b][i][j] = temp[i][j];
     }
 }
-bool isGameOver();
+bool isGameOver() {
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            if (blocks[b][i][j] != ' ') {
+                int ty = y + i;
+                int tx = x + j;
+                if (board[ty][tx] != ' ')
+                    return true;
+            }
+    return false;
+}
 
 int level;
 void updateLevel();
