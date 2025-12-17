@@ -5,75 +5,100 @@ using namespace std;
 #define H 20
 #define W 15
 char board[H][W] = {};
-char blocks[][4][4] = {
-        {{' ','I',' ',' '},
-         {' ','I',' ',' '},
-         {' ','I',' ',' '},
-         {' ','I',' ',' '}},
-        {{' ','I',' ',' '},
-         {' ','I',' ',' '},
-         {' ','I',' ',' '},
-         {' ','I',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','O','O',' '},
-         {' ','O','O',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','O','O',' '},
-         {' ','O','O',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','O','O',' '},
-         {' ','O','O',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','O','O',' '},
-         {' ','O','O',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','O','O',' '},
-         {' ','O','O',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','O','O',' '},
-         {' ','O','O',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','O','O',' '},
-         {' ','O','O',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {'I','I','I','I'},
-         {' ',' ',' ',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','O','O',' '},
-         {' ','O','O',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','T',' ',' '},
-         {'T','T','T',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ','S','S',' '},
-         {'S','S',' ',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {'Z','Z',' ',' '},
-         {' ','Z','Z',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {'J',' ',' ',' '},
-         {'J','J','J',' '},
-         {' ',' ',' ',' '}},
-        {{' ',' ',' ',' '},
-         {' ',' ','L',' '},
-         {'L','L','L',' '},
-         {' ',' ',' ',' '}}
+char blocks[7][4][4] = {
+    // I
+    {{' ','I',' ',' '},
+     {' ','I',' ',' '},
+     {' ','I',' ',' '},
+     {' ','I',' ',' '}},
+
+     // O
+    {{' ',' ',' ',' '},
+     {' ','O','O',' '},
+     {' ','O','O',' '},
+     {' ',' ',' ',' '}},
+
+     // T
+    {{' ','T',' ',' '},
+     {'T','T','T',' '},
+     {' ',' ',' ',' '},
+     {' ',' ',' ',' '}},
+
+       // S
+    {{' ','S','S',' '},
+     {'S','S',' ',' '},
+     {' ',' ',' ',' '},
+     {' ',' ',' ',' '}},
+
+        // Z
+    {{'Z','Z',' ',' '},
+     {' ','Z','Z',' '},
+     {' ',' ',' ',' '},
+     {' ',' ',' ',' '}},
+
+         // J
+    {{'J',' ',' ',' '},
+     {'J','J','J',' '},
+     {' ',' ',' ',' '},
+     {' ',' ',' ',' '}},
+
+          // L
+    {{' ',' ','L',' '},
+     {'L','L','L',' '},
+     {' ',' ',' ',' '},
+     {' ',' ',' ',' '}}
 };
 
-int x = 4, y = 0, b = 1;
+
+int x = 6, y = 1, b = 1;
 int speed = 200;   // tốc độ rơi mặc định
+
+int showMainMenu() {
+    system("cls");
+
+    cout << "\n\n";
+    cout << "=============================================\n";
+    cout << "                 \033[1;36mT E T R I S\033[0m\n";
+    cout << "=============================================\n";
+    cout << "\n";
+    cout << "              \033[1mCHON CHE DO CHOI\033[0m\n";
+    cout << "\n";
+
+    cout << "   [1] Marathon       - Choi den khi thua\n";
+    cout << "   [2] Sprint (40 Lines) - Hoan thanh 40 hang nhanh nhat\n";
+    cout << "   [3] Ultra (2 Minutes) - Ghi diem trong 2 phut\n";
+    cout << "   [4] Endless        - Choi vo han\n";
+
+    cout << "\n";
+    cout << "   Chon 1 che do (1-4): ";
+
+    int mode;
+    cin >> mode;
+
+    return mode;
+}
+
+int showDifficultyMenu() {
+    system("cls");
+
+    cout << "\n\n";
+    cout << "=============================================\n";
+    cout << "            \033[1;33mCHON DO KHO\033[0m\n";
+    cout << "=============================================\n";
+    cout << "\n";
+
+    cout << "   [1] Easy\n";
+    cout << "   [2] Medium\n";
+    cout << "   [3] Hard\n";
+
+    cout << "\n";
+    cout << "   Chon do kho (1-3): ";
+
+    int diff;
+    cin >> diff;
+
+    return diff;
+}
 
 void gotoxy(int x, int y) {
     COORD c = { x, y };
@@ -91,38 +116,38 @@ void block2Board() {
             if (blocks[b][i][j] != ' ')
                 board[y + i][x + j] = blocks[b][i][j];
 }
-void initBoard(){
-    for (int i = 0 ; i < H ; i++){
-        for (int j = 0 ; j < W ; j++){
+void initBoard() {
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
 
             // Góc
-            if (i == 0 && j == 0)                board[i][j] = '┏';
-            else if (i == 0 && j == W-1)         board[i][j] = '┓';
-            else if (i == H-1 && j == 0)         board[i][j] = '┗';
-            else if (i == H-1 && j == W-1)       board[i][j] = '┛';
+            if (i == 0 && j == 0) board[i][j] = '+';
+            else if (i == 0 && j == W - 1) board[i][j] = '+';
+            else if (i == H - 1 && j == 0) board[i][j] = '+';
+            else if (i == H - 1 && j == W - 1) board[i][j] = '+';
 
             // Viền trên/dưới
-            else if (i == 0 || i == H-1)         board[i][j] = '━';
+            else if (i == 0 || i == H - 1) board[i][j] = '-';
 
             // Viền trái/phải
-            else if (j == 0 || j == W-1)         board[i][j] = '┃';
+            else if (j == 0 || j == W - 1) board[i][j] = '|';
 
             // Bên trong
             else board[i][j] = ' ';
         }
     }
 }
-void draw(){
-    gotoxy(0,0);
-    for (int i = 0 ; i < H ; i++){
-        for (int j = 0 ; j < W ; j++){
-            
+void draw() {
+    gotoxy(0, 0);
+    for (int i = 0; i < H; i++) {
+        for (int j = 0; j < W; j++) {
+
             char c = board[i][j];
 
             // Nếu là ký tự block (I,O,T,S,Z,J,L) → in ra █
-            if (c=='I' || c=='O' || c=='T' || c=='S' ||
-                c=='Z' || c=='J' || c=='L') {
-                cout << char(219);   // █
+            if (c == 'I' || c == 'O' || c == 'T' || c == 'S' ||
+                c == 'Z' || c == 'J' || c == 'L') {
+                cout << char(219);
             }
             else {
                 cout << c;
@@ -143,50 +168,132 @@ bool canMove(int dx, int dy) {
             }
     return true;
 }
-void removeLine() {
+int removeLine() {
+    int count = 0;
     int j;
+
     for (int i = H - 2; i > 0; i--) {
-        for (j = 0; j < W - 1; j++)
+        for (j = 1; j < W - 1; j++)
             if (board[i][j] == ' ') break;
+
         if (j == W - 1) {
-            for (int ii = i; ii > 0; ii--)
-                for (int j = 0; j < W - 1; j++) board[ii][j] = board[ii - 1][j];
+            count++;
+
+            for (int ii = i; ii > 1; ii--)
+                for (int jj = 1; jj < W - 1; jj++)
+                    board[ii][jj] = board[ii - 1][jj];
+
             i++;
-            draw();
-            Sleep(200);
-            if (speed > 50) speed -= 10;   // tăng tốc sau khi clear line
         }
     }
+    return count;
 }
 void rotateBlock() {
     char temp[4][4];
 
     // copy
-    for (int i=0;i<4;i++)
-        for (int j=0;j<4;j++)
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             temp[i][j] = blocks[b][i][j];
 
     // xoay 90 độ
-    for (int i=0;i<4;i++)
-        for (int j=0;j<4;j++)
-            blocks[b][j][3-i] = temp[i][j];
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            blocks[b][j][3 - i] = temp[i][j];
 
     // kiểm tra va chạm
-    if (!canMove(0,0)) {
+    if (!canMove(0, 0)) {
         // nếu xoay bị kẹt → xoay lại (undo)
-        for (int i=0;i<4;i++)
-            for (int j=0;j<4;j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
                 blocks[b][i][j] = temp[i][j];
     }
 }
+bool isGameOver() {
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            if (blocks[b][i][j] != ' ') {
+                int ty = y + i;
+                int tx = x + j;
+                if (board[ty][tx] != ' ')
+                    return true;
+            }
+    return false;
+}
+
+int level;
+void updateLevel();
+
+void hardDrop() {
+    boardDelBlock();
+    while (canMove(0, 1)) {
+        y++;
+    }
+}
+
+int score = 0;
+int linesCleared = 0;
+
+void updateScore(int lines) {
+    switch (lines) {
+    case 1: score += 40; break;
+    case 2: score += 100; break;
+    case 3: score += 300; break;
+    case 4: score += 1200; break;
+    }
+    linesCleared += lines;
+}
+
+int nextBlock;   // khối tiếp theo
+
+void drawNextBlock() {
+    int startX = W + 2;
+    int startY = 8;
+
+    gotoxy(startX, startY - 2);
+    cout << "Next:";
+
+    for (int i = 0; i < 4; i++) {
+        gotoxy(startX, startY + i);
+        for (int j = 0; j < 4; j++) {
+            if (blocks[nextBlock][i][j] != ' ')
+                cout << char(219);
+            else
+                cout << ' ';
+        }
+    }
+}
+
+
+void drawHUD() {
+    gotoxy(W + 2, 2);
+    cout << "Score: " << score;
+
+    gotoxy(W + 2, 4);
+    cout << "Lines: " << linesCleared;
+}
+
 int main()
 {
-    // đoạn này tui bị lỗi phông lúc chạy nên thêm vào
-    system("chcp 65001 > nul");
+
+    system("chcp 437 > nul");// thêm đúng codepage vào
+
+
     system("cls");
+
+    int mode = showMainMenu();
+    int difficulty = showDifficultyMenu();
+
+    // Debug để xem giá trị
+    cout << "\nBan da chon che do: " << mode << endl;
+    cout << "Ban da chon do kho: " << difficulty << endl;
+
+    // Sau đó mới chạy game chính
+    system("pause");
 
     srand(time(0));
     b = rand() % 7;
+    nextBlock = rand() % 7;
     system("cls");
     initBoard();
     while (1) {
@@ -196,17 +303,26 @@ int main()
             if (c == 'w') rotateBlock(); //điều khiển xoay
             if (c == 'a' && canMove(-1, 0)) x--;
             if (c == 'd' && canMove(1, 0)) x++;
-            if (c == 'x' && canMove(0, 1))  y++;
+            if (c == 's' && canMove(0, 1))  y++;
             if (c == 'q') break;
+            if (c == 'x') {
+                hardDrop();
+            }
         }
+
         if (canMove(0, 1)) y++;
         else {
+            lock_block:
             block2Board();
-            removeLine();
-            x = 5; y = 0; b = rand() % 7;
+            int cleared= removeLine();
+            if(cleared>0) updateScore(cleared);
+            x = 6; y = 1; b = nextBlock; nextBlock = rand() % 7;
         }
         block2Board();
         draw();
+        drawHUD();
+        drawNextBlock();
+
         Sleep(speed); // thay biến speed kiểm soát tốc độ vào
     }
     return 0;
