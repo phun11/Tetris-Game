@@ -229,6 +229,21 @@ bool isGameOver() {
     return false;
 }
 
+void showGameOver() {
+    system("cls");
+    cout << "\n\n";
+    cout << "====================================\n";
+    cout << "           G A M E  O V E R\n";
+    cout << "====================================\n\n";
+
+    cout << "Score : " << score << endl;
+    cout << "Lines : " << linesCleared << endl;
+    cout << "Level : " << level << endl;
+
+    cout << "\nNhan phim bat ky de thoat...";
+    _getch();
+}
+
 void hardDrop() {
     boardDelBlock();
     while (canMove(0, 1)) {
@@ -278,7 +293,6 @@ void drawNextBlock() {
         }
     }
 }
-
 
 void drawHUD() {
     gotoxy(W + 2, 2);
@@ -339,6 +353,12 @@ int main()
                 updateLevel();
             }
             x = 6; y = 1; b = nextBlock; nextBlock = rand() % 7;
+
+            //check game over sau khi sinh block mới
+            if (isGameOver()) {
+                showGameOver();
+                break;
+            }
         }
         block2Board();
         draw();
