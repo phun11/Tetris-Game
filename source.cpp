@@ -57,6 +57,14 @@ int linesCleared = 0; // tổng số hàng đã xóa
 int score = 0;
 int nextBlock;   // khối tiếp theo
 
+DWORD gameStartTime;     // thời điểm bắt đầu game
+int elapsedTime = 0;     // thời gian đã trôi (giây)
+int timeLeft = 0;        // thời gian còn lại (Ultra)
+
+bool isUltraMode = false;
+const int ULTRA_TIME = 60; // 2 phút
+
+
 int showMainMenu() {
     system("cls");
 
@@ -304,11 +312,33 @@ void drawHUD() {
     //tạm thêm hiển thị level hiện tai để test code
     gotoxy(W + 2, 6);
     cout << "Level: " << level;
+
+    //Thêm timer cho mọi mode
+    gotoxy(W + 2, 8);
+    cout << "Time: ";
+
+    if (isUltraMode)
+        cout << timeLeft << "s   ";
+    else
+        cout << elapsedTime << "s   ";
+}
+
+void showUltraResult() {
+    system("cls");
+    cout << "\n\n";
+    cout << "========== ULTRA MODE ==========\n\n";
+    cout << "TIME'S UP!\n\n";
+
+    cout << "Final Score : " << score << endl;
+    cout << "Lines Cleared : " << linesCleared << endl;
+    cout << "Level Reached : " << level << endl;
+
+    cout << "\nNhan phim bat ky de thoat...";
+    _getch();
 }
 
 int main()
 {
-
     system("chcp 437 > nul");// thêm đúng codepage vào
 
 
@@ -316,6 +346,10 @@ int main()
 
     int mode = showMainMenu();
     int difficulty = showDifficultyMenu();
+
+    if (mode == 3) { // Ultra
+        isUltraMode = true;
+    }
 
     // Debug để xem giá trị
     cout << "\nBan da chon che do: " << mode << endl;
@@ -329,8 +363,28 @@ int main()
     nextBlock = rand() % 7;
     system("cls");
     initBoard();
+    gameStartTime = GetTickCount();
+
     while (1) {
         boardDelBlock();
+
+        // ===== UPDATE TIMER =====
+        elapsedTime = (GetTickCount() - gameStartTime) / 1000;
+
+        if (isUltraMode) {
+            timeLeft = ULTRA_TIME - elapsedTime;
+        }
+
+        // ===== ULTRA END CONDITION =====
+        if (isUltraMode && timeLeft <= 0) {
+            showUltraResult();
+            break;
+        }
+
+        // điều chỉnh tốc độ
+        Sleep(speed); // thay biến speed kiểm soát tốc độ vào
+
+        // nhận input điều khiển từ bàn phím
         if (_kbhit()) {
             char c = _getch();
             if (c == 'w') rotateBlock(); //điều khiển xoay
@@ -343,6 +397,7 @@ int main()
             }
         }
 
+        // gameplay, xoá line,...
         if (canMove(0, 1)) y++;
         else {
             lock_block:
@@ -360,12 +415,13 @@ int main()
                 break;
             }
         }
+
+        // render
         block2Board();
         draw();
         drawHUD();
         drawNextBlock();
 
-        Sleep(speed); // thay biến speed kiểm soát tốc độ vào
     }
     return 0;
 }
