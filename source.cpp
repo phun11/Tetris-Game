@@ -390,7 +390,7 @@ int main()
             if (c == 'w') rotateBlock(); //điều khiển xoay
             if (c == 'a' && canMove(-1, 0)) x--;
             if (c == 'd' && canMove(1, 0)) x++;
-            if (c == 's' && canMove(0, 1))  y++;
+            if (c == 's' && canMove(0, 1))  y++; //soft drop
             if (c == 'q') break;
             if (c == 'x') {
                 hardDrop();
