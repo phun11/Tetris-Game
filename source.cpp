@@ -82,13 +82,12 @@ int showMainMenu() {
     cout << "              \033[1mCHON CHE DO CHOI\033[0m\n";
     cout << "\n";
 
-    cout << "   [1] Marathon       - Choi den khi thua\n";
-    cout << "   [2] Sprint (40 Lines) - Hoan thanh 40 hang nhanh nhat\n";
-    cout << "   [3] Ultra (2 Minutes) - Ghi diem trong 2 phut\n";
-    cout << "   [4] Endless        - Choi vo han\n";
+    cout << "   [1] Marathon           - Choi den khi thua\n";
+    cout << "   [2] Sprint (40 Lines)  - Hoan thanh 40 hang nhanh nhat\n";
+    cout << "   [3] Ultra (2 Minutes)  - Ghi diem trong 2 phut\n";
 
     cout << "\n";
-    cout << "   Chon 1 che do (1-4): ";
+    cout << "   Chon 1 che do (1-3): ";
 
     int mode;
     cin >> mode;
@@ -362,16 +361,13 @@ int main()
 
     int mode = showMainMenu();
 
+    // đổi biến chế độ chơi
     if (mode == 2) { // Sprint 40 Lines
         isSprintMode = true;
     }
-
     if (mode == 3) { // Ultra
         isUltraMode = true;
     }
-
-    // Debug để xem giá trị
-    cout << "\nBan da chon che do: " << mode << endl;
 
     // Sau đó mới chạy game chính
     system("pause");
