@@ -50,19 +50,25 @@ char blocks[7][4][4] = {
 };
 
 //tui mang hết biến toàn cục lên đây khai báo nha ae
+
+//biến dùng chung
 int x = 6, y = 1, b = 1;
 int speed = 200;   // tốc độ rơi mặc định
 int level = 1;        // level hiện tại (bắt đầu từ 1)
 int linesCleared = 0; // tổng số hàng đã xóa
 int score = 0;
 int nextBlock;   // khối tiếp theo
-
 DWORD gameStartTime;     // thời điểm bắt đầu game
-int elapsedTime = 0;     // thời gian đã trôi (giây)
-int timeLeft = 0;        // thời gian còn lại (Ultra)
+int elapsedTime = 0;     // thời gian đã trôi (giây) dùng cho timer
 
+//dùng cho ultra mode
+int timeLeft = 0;  // thời gian còn lại (Ultra)
 bool isUltraMode = false;
-const int ULTRA_TIME = 60; // 2 phút
+const int ULTRA_TIME = 120; // 2 phút
+
+//dùng cho sprint mode
+bool isSprintMode = false;
+const int SPRINT_TARGET = 40;
 
 
 int showMainMenu() {
@@ -88,28 +94,6 @@ int showMainMenu() {
     cin >> mode;
 
     return mode;
-}
-
-int showDifficultyMenu() {
-    system("cls");
-
-    cout << "\n\n";
-    cout << "=============================================\n";
-    cout << "            \033[1;33mCHON DO KHO\033[0m\n";
-    cout << "=============================================\n";
-    cout << "\n";
-
-    cout << "   [1] Easy\n";
-    cout << "   [2] Medium\n";
-    cout << "   [3] Hard\n";
-
-    cout << "\n";
-    cout << "   Chon do kho (1-3): ";
-
-    int diff;
-    cin >> diff;
-
-    return diff;
 }
 
 void gotoxy(int x, int y) {
@@ -309,6 +293,11 @@ void drawHUD() {
     gotoxy(W + 2, 4);
     cout << "Lines: " << linesCleared;
 
+    if (isSprintMode) {
+        gotoxy(W + 2, 10);
+        cout << "Target: 40";
+    }
+
     //tạm thêm hiển thị level hiện tai để test code
     gotoxy(W + 2, 6);
     cout << "Level: " << level;
@@ -337,6 +326,20 @@ void showUltraResult() {
     _getch();
 }
 
+void showSprintResult() {
+    system("cls");
+    cout << "\n\n";
+    cout << "========== SPRINT MODE ==========\n\n";
+    cout << "40 LINES CLEARED!\n\n";
+
+    cout << "Time Taken : " << elapsedTime << "s\n";
+    cout << "Final Score : " << score << endl;
+    cout << "Level Reached : " << level << endl;
+
+    cout << "\nNhan phim bat ky de thoat...";
+    _getch();
+}
+
 int main()
 {
     system("chcp 437 > nul");// thêm đúng codepage vào
@@ -345,7 +348,10 @@ int main()
     system("cls");
 
     int mode = showMainMenu();
-    int difficulty = showDifficultyMenu();
+
+    if (mode == 2) { // Sprint 40 Lines
+        isSprintMode = true;
+    }
 
     if (mode == 3) { // Ultra
         isUltraMode = true;
@@ -353,7 +359,6 @@ int main()
 
     // Debug để xem giá trị
     cout << "\nBan da chon che do: " << mode << endl;
-    cout << "Ban da chon do kho: " << difficulty << endl;
 
     // Sau đó mới chạy game chính
     system("pause");
@@ -390,7 +395,7 @@ int main()
             if (c == 'w') rotateBlock(); //điều khiển xoay
             if (c == 'a' && canMove(-1, 0)) x--;
             if (c == 'd' && canMove(1, 0)) x++;
-            if (c == 's' && canMove(0, 1))  y++;
+            if (c == 's' && canMove(0, 1))  y++; //soft drop
             if (c == 'q') break;
             if (c == 'x') {
                 hardDrop();
@@ -407,6 +412,13 @@ int main()
                 updateScore(cleared);
                 updateLevel();
             }
+
+            // ===== SPRINT END CONDITION =====
+            if (isSprintMode && linesCleared >= SPRINT_TARGET) {
+                showSprintResult();
+                break;
+            }
+
             x = 6; y = 1; b = nextBlock; nextBlock = rand() % 7;
 
             //check game over sau khi sinh block mới
