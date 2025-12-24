@@ -99,18 +99,21 @@ void gotoxy(int x, int y) {
     COORD c = { x, y };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
 }
+
 void boardDelBlock() {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
             if (blocks[b][i][j] != ' ' && y + j < H)
                 board[y + i][x + j] = ' ';
 }
+
 void block2Board() {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
             if (blocks[b][i][j] != ' ')
                 board[y + i][x + j] = blocks[b][i][j];
 }
+
 void initBoard() {
     for (int i = 0; i < H; i++) {
         for (int j = 0; j < W; j++) {
@@ -132,24 +135,32 @@ void initBoard() {
         }
     }
 }
-void draw() {
+
+void drawBorderOnly() {
     gotoxy(0, 0);
     for (int i = 0; i < H; i++) {
         for (int j = 0; j < W; j++) {
-
-            char c = board[i][j];
-
-            // Nếu là ký tự block (I,O,T,S,Z,J,L) → in ra █
-            if (c == 'I' || c == 'O' || c == 'T' || c == 'S' ||
-                c == 'Z' || c == 'J' || c == 'L') {
-                cout << char(219);
-            }
-            else {
-                cout << c;
-            }
-
+            if (i == 0 || i == H - 1 || j == 0 || j == W - 1)
+                cout << board[i][j];
+            else
+                cout << ' ';
         }
         cout << endl;
+    }
+}
+
+void draw() {
+    for (int i = 1; i < H - 1; i++) {
+        gotoxy(1, i);
+        for (int j = 1; j < W - 1; j++) {
+
+            char c = board[i][j];
+            if (c == 'I' || c == 'O' || c == 'T' ||
+                c == 'S' || c == 'Z' || c == 'J' || c == 'L')
+                cout << char(219);
+            else
+                cout << ' ';
+        }
     }
 }
 
@@ -289,8 +300,8 @@ void updateLevel() {
 }
 
 void drawNextBlock() {
-    int boxX = W + 3;
-    int boxY = 11;
+    int boxX = W + 15;
+    int boxY = 12;
 
     // tiêu đề
     gotoxy(boxX, boxY);
@@ -314,7 +325,7 @@ void drawNextBlock() {
 
     // vẽ block
     for (int i = 0; i < 4; i++) {
-        gotoxy(boxX, boxY + 2 + i);
+        gotoxy(boxX + 1, boxY + 2 + i);
         for (int j = 0; j < 4; j++) {
             if (blocks[nextBlock][i][j] != ' ')
                 cout << char(219);
@@ -328,21 +339,21 @@ void drawHUD() {
     int xHUD = W + 3;
 
     gotoxy(xHUD, 2);
-    cout << "Score : " << score << "   ";
+    cout << "Score : " << score << "    ";
 
     gotoxy(xHUD, 4);
-    cout << "Lines : " << linesCleared << "   ";
+    cout << "Lines : " << linesCleared << "    ";
 
     gotoxy(xHUD, 6);
-    cout << "Level : " << level << "   ";
+    cout << "Level : " << level << "    ";
 
     gotoxy(xHUD, 8);
     cout << "Time  : ";
 
     if (isUltraMode)
-        cout << timeLeft << "s   ";
+        cout << timeLeft << "s    ";
     else
-        cout << elapsedTime << "s   ";
+        cout << elapsedTime << "s    ";
 }
 
 void showUltraResult() {
@@ -377,6 +388,12 @@ int main()
 {
     system("chcp 437 > nul");// thêm đúng codepage vào
 
+    // ===== HIDE CONSOLE CURSOR =====
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+    cursorInfo.dwSize = 1;
+    cursorInfo.bVisible = FALSE;
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
 
     system("cls");
 
@@ -398,6 +415,7 @@ int main()
     nextBlock = rand() % 7;
     system("cls");
     initBoard();
+    drawBorderOnly();
     gameStartTime = GetTickCount();
 
     while (1) {
