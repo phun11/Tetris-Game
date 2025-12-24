@@ -153,6 +153,27 @@ void draw() {
     }
 }
 
+int getGhostY() {
+    int ghostY = y;
+
+    while (true) {
+        ghostY++;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (blocks[b][i][j] != ' ') {
+                    int ty = ghostY + i;
+                    int tx = x + j;
+
+                    if (ty >= H - 1 || board[ty][tx] != ' ') {
+                        return ghostY - 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
 bool canMove(int dx, int dy) {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
@@ -440,6 +461,26 @@ int main()
         // render
         block2Board();
         draw();
+
+        // ===== DRAW GHOST PIECE =====
+        int ghostY = getGhostY();
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (blocks[b][i][j] != ' ') {
+                    int gx = x + j;
+                    int gy = ghostY + i;
+
+                    // không vẽ đè block thật
+                    if (gy != y + i) {
+                        gotoxy(gx, gy);
+                        cout << '.';
+                    }
+                }
+            }
+        }
+
+        //render
         drawHUD();
         drawNextBlock();
 
