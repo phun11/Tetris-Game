@@ -100,6 +100,22 @@ void gotoxy(int x, int y) {
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
 }
 
+void setBlockColor(char c) {
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    switch (c) {
+    case 'I': SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY); break; // Cyan
+    case 'O': SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY); break; // Yellow
+    case 'T': SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY); break; // Magenta
+    case 'S': SetConsoleTextAttribute(h, FOREGROUND_GREEN | FOREGROUND_INTENSITY); break;
+    case 'Z': SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_INTENSITY); break;
+    case 'J': SetConsoleTextAttribute(h, FOREGROUND_BLUE | FOREGROUND_INTENSITY); break;
+    case 'L': SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_GREEN); break; // Orange-ish
+    default:
+        SetConsoleTextAttribute(h, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+    }
+}
+
 void boardDelBlock() {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
@@ -155,14 +171,19 @@ void draw() {
         for (int j = 1; j < W - 1; j++) {
 
             char c = board[i][j];
-            if (c == 'I' || c == 'O' || c == 'T' ||
-                c == 'S' || c == 'Z' || c == 'J' || c == 'L')
+            if (c != ' ') {
+                setBlockColor(c);
                 cout << char(219);
-            else
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+            }
+            else {
                 cout << ' ';
+            }
         }
     }
 }
+
 
 int getGhostY() {
     int ghostY = y;
@@ -327,10 +348,14 @@ void drawNextBlock() {
     for (int i = 0; i < 4; i++) {
         gotoxy(boxX + 1, boxY + 2 + i);
         for (int j = 0; j < 4; j++) {
-            if (blocks[nextBlock][i][j] != ' ')
+            char c = blocks[nextBlock][i][j];
+            if (c != ' ') {
+                setBlockColor(c);
                 cout << char(219);
-            else
-                cout << ' ';
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+                    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+            }
+            else cout << ' ';
         }
     }
 }
