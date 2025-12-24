@@ -269,14 +269,32 @@ void updateLevel() {
 }
 
 void drawNextBlock() {
-    int startX = W + 2;
-    int startY = 8;
+    int boxX = W + 3;
+    int boxY = 11;
 
-    gotoxy(startX, startY - 2);
-    cout << "Next:";
+    // tiêu đề
+    gotoxy(boxX, boxY);
+    cout << "Next";
 
+    // khung 4x4
+    for (int i = 0; i <= 5; i++) {
+        gotoxy(boxX - 1, boxY + 1 + i); cout << "|";
+        gotoxy(boxX + 6, boxY + 1 + i); cout << "|";
+    }
+
+    for (int j = 0; j <= 5; j++) {
+        gotoxy(boxX - 1 + j, boxY + 1); cout << "-";
+        gotoxy(boxX - 1 + j, boxY + 6); cout << "-";
+    }
+
+    gotoxy(boxX - 1, boxY + 1); cout << "+";
+    gotoxy(boxX + 6, boxY + 1); cout << "+";
+    gotoxy(boxX - 1, boxY + 6); cout << "+";
+    gotoxy(boxX + 6, boxY + 6); cout << "+";
+
+    // vẽ block
     for (int i = 0; i < 4; i++) {
-        gotoxy(startX, startY + i);
+        gotoxy(boxX, boxY + 2 + i);
         for (int j = 0; j < 4; j++) {
             if (blocks[nextBlock][i][j] != ' ')
                 cout << char(219);
@@ -287,24 +305,19 @@ void drawNextBlock() {
 }
 
 void drawHUD() {
-    gotoxy(W + 2, 2);
-    cout << "Score: " << score;
+    int xHUD = W + 3;
 
-    gotoxy(W + 2, 4);
-    cout << "Lines: " << linesCleared;
+    gotoxy(xHUD, 2);
+    cout << "Score : " << score << "   ";
 
-    if (isSprintMode) {
-        gotoxy(W + 2, 10);
-        cout << "Target: 40";
-    }
+    gotoxy(xHUD, 4);
+    cout << "Lines : " << linesCleared << "   ";
 
-    //tạm thêm hiển thị level hiện tai để test code
-    gotoxy(W + 2, 6);
-    cout << "Level: " << level;
+    gotoxy(xHUD, 6);
+    cout << "Level : " << level << "   ";
 
-    //Thêm timer cho mọi mode
-    gotoxy(W + 2, 8);
-    cout << "Time: ";
+    gotoxy(xHUD, 8);
+    cout << "Time  : ";
 
     if (isUltraMode)
         cout << timeLeft << "s   ";
