@@ -49,6 +49,65 @@ char blocks[7][4][4] = {
      {' ',' ',' ',' '}}
 };
 
+class Piece {
+protected:
+    char shape[4][4];
+
+public:
+    Piece(char src[4][4]) {
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                shape[i][j] = src[i][j];
+    }
+
+    virtual void rotate() {
+        char temp[4][4] = { ' ' };   // RẤT QUAN TRỌNG
+
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                temp[j][3 - i] = shape[i][j];
+
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                shape[i][j] = temp[i][j];
+    }
+
+    char getCell(int i, int j) const {
+        return shape[i][j];
+    }
+
+    virtual ~Piece() {}
+};
+
+class OPiece : public Piece {
+public:
+    OPiece(char src[4][4]) : Piece(src) {}
+    void rotate() override {}   // O không xoay
+};
+
+class IPiece : public Piece { public: IPiece(char s[4][4]) : Piece(s) {} };
+class TPiece : public Piece { public: TPiece(char s[4][4]) : Piece(s) {} };
+class SPiece : public Piece { public: SPiece(char s[4][4]) : Piece(s) {} };
+class ZPiece : public Piece { public: ZPiece(char s[4][4]) : Piece(s) {} };
+class JPiece : public Piece { public: JPiece(char s[4][4]) : Piece(s) {} };
+class LPiece : public Piece { public: LPiece(char s[4][4]) : Piece(s) {} };
+
+Piece* createPiece(int type) {
+    switch (type) {
+    case 0: return new IPiece(blocks[0]);
+    case 1: return new OPiece(blocks[1]);
+    case 2: return new TPiece(blocks[2]);
+    case 3: return new SPiece(blocks[3]);
+    case 4: return new ZPiece(blocks[4]);
+    case 5: return new JPiece(blocks[5]);
+    case 6: return new LPiece(blocks[6]);
+    }
+    return nullptr;
+}
+
+Piece* curPiece = nullptr;
+Piece* nextPiece = nullptr;
+
 //tui mang hết biến toàn cục lên đây khai báo nha ae
 
 //biến dùng chung
@@ -119,15 +178,15 @@ void setBlockColor(char c) {
 void boardDelBlock() {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            if (blocks[b][i][j] != ' ' && y + j < H)
+            if (curPiece->getCell(i, j) != ' ' && y + j < H)
                 board[y + i][x + j] = ' ';
 }
 
 void block2Board() {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            if (blocks[b][i][j] != ' ')
-                board[y + i][x + j] = blocks[b][i][j];
+            if (curPiece->getCell(i, j) != ' ')
+                board[y + i][x + j] = curPiece->getCell(i, j);
 }
 
 void initBoard() {
@@ -193,7 +252,7 @@ int getGhostY() {
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (blocks[b][i][j] != ' ') {
+                if (curPiece->getCell(i, j) != ' ') {
                     int ty = ghostY + i;
                     int tx = x + j;
 
@@ -209,7 +268,7 @@ int getGhostY() {
 bool canMove(int dx, int dy) {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            if (blocks[b][i][j] != ' ') {
+            if (curPiece->getCell(i, j) != ' ') {
                 int tx = x + j + dx;
                 int ty = y + i + dy;
                 if (tx < 1 || tx >= W - 1 || ty >= H - 1) return false;
@@ -239,32 +298,10 @@ int removeLine() {
     return count;
 }
 
-void rotateBlock() {
-    char temp[4][4];
-
-    // copy
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            temp[i][j] = blocks[b][i][j];
-
-    // xoay 90 độ
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            blocks[b][j][3 - i] = temp[i][j];
-
-    // kiểm tra va chạm
-    if (!canMove(0, 0)) {
-        // nếu xoay bị kẹt → xoay lại (undo)
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
-                blocks[b][i][j] = temp[i][j];
-    }
-}
-
 bool isGameOver() {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            if (blocks[b][i][j] != ' ') {
+            if (curPiece->getCell(i, j) != ' ') {
                 int ty = y + i;
                 int tx = x + j;
                 if (board[ty][tx] != ' ')
@@ -348,7 +385,7 @@ void drawNextBlock() {
     for (int i = 0; i < 4; i++) {
         gotoxy(boxX + 1, boxY + 2 + i);
         for (int j = 0; j < 4; j++) {
-            char c = blocks[nextBlock][i][j];
+            char c = nextPiece->getCell(i, j);
             if (c != ' ') {
                 setBlockColor(c);
                 cout << char(219);
@@ -436,8 +473,8 @@ int main()
     system("pause");
 
     srand(time(0));
-    b = rand() % 7;
-    nextBlock = rand() % 7;
+    curPiece = createPiece(rand() % 7);
+    nextPiece = createPiece(rand() % 7);
     system("cls");
     initBoard();
     drawBorderOnly();
@@ -465,7 +502,16 @@ int main()
         // nhận input điều khiển từ bàn phím
         if (_kbhit()) {
             char c = _getch();
-            if (c == 'w') rotateBlock(); //điều khiển xoay
+            if (c == 'w') {
+                boardDelBlock();
+
+                Piece backup = *curPiece;   // sao lưu
+                curPiece->rotate();
+
+                if (!canMove(0, 0)) {
+                    *curPiece = backup;    // rollback
+                }
+            }
             if (c == 'a' && canMove(-1, 0)) x--;
             if (c == 'd' && canMove(1, 0)) x++;
             if (c == 's' && canMove(0, 1))  y++; //soft drop
@@ -492,7 +538,10 @@ int main()
                 break;
             }
 
-            x = 6; y = 1; b = nextBlock; nextBlock = rand() % 7;
+            x = 6; y = 1;
+            delete curPiece;
+            curPiece = nextPiece;
+            nextPiece = createPiece(rand() % 7);
 
             //check game over sau khi sinh block mới
             if (isGameOver()) {
@@ -510,7 +559,7 @@ int main()
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (blocks[b][i][j] != ' ') {
+                if (curPiece->getCell(i, j) != ' ') {
                     int gx = x + j;
                     int gy = ghostY + i;
 
