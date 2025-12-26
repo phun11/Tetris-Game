@@ -162,11 +162,17 @@ void draw() {
                 cout << char(219);
             }
             else {
+<<<<<<< Updated upstream
                 cout << c;
             }
 
         }
         cout << endl;
+=======
+                cout << ' ';
+            }
+        }
+>>>>>>> Stashed changes
     }
 }
 
@@ -419,6 +425,13 @@ int main()
         // render
         block2Board();
         draw();
+<<<<<<< Updated upstream
+=======
+
+
+
+        //render
+>>>>>>> Stashed changes
         drawHUD();
         drawNextBlock();
 
